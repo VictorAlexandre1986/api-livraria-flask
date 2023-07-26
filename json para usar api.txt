@@ -1,0 +1,85 @@
+create user
+http://127.0.0.1:5000/clientes
+{
+	"nome":"Victor"
+}
+
+findall user
+http://127.0.0.1:5000/clientes
+
+delete user
+http://127.0.0.1:5000/clientes/6
+
+
+
+create book
+http://127.0.0.1:5000/livros/
+{
+	"nome":"Outsider",
+	"autor":"Stephen King",
+	"editora":"FSG"
+}
+
+
+findall books
+http://127.0.0.1:5000/livros
+
+update book
+http://127.0.0.1:5000/livros/1
+{
+	"nome":"Invocadores do mal",
+	"autor":"Lorraine Warren",
+	"editora":"FSG"
+}
+
+delete book
+http://127.0.0.1:5000/livros/7
+
+
+create compra
+http://127.0.0.1:5000/compras
+{
+	
+	"cliente":"Victor",
+	"livros": [
+			{
+				"livro": "A casa negra",
+				"autor": "Stephen King",
+				"editora": "FSG"
+			},
+			{
+				"livro":"O iluminado",
+				"autor":"Stephen King",
+				"editora":"FSG"
+			}
+
+	
+   ]
+}
+
+find compra id
+http://127.0.0.1:5000/compras/8
+
+findall compra 
+http://127.0.0.1:5000/compras
+
+delete compra
+http://127.0.0.1:5000/compras/1
+
+update compra
+http://127.0.0.1:5000/compras/8
+	{
+			"nome": "Victor",
+			"livros": [
+				{
+					"nome": "Outsider",
+					"autor": "Stephen King",
+					"editora": "FSG"
+				},
+				{
+					"nome": "O vilarejo",
+					"autor": "Stephen King",
+					"editora": "FSG"
+				}
+			]
+		}
