@@ -1,0 +1,3 @@
+git remote add origin https://github.com/VictorAlexandre1986/api-livraria-flask.git
+git branch -M main
+git push -u origin main
