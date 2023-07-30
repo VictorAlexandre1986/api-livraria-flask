@@ -213,62 +213,123 @@ class CrudCompra():
             session.rollback()
             
             
+    # @staticmethod    
+    # def atualizar_compra(id, compra_data):
+    #     try:
+    #         compra = session.query(Compra).filter(Compra.id == id).one_or_none()
+
+    #         cliente = session.query(Cliente).filter(Cliente.nome == compra_data['nome']).first()
+
+    #         if  compra is not None:
+    #             compra = Compra(
+    #                 id_cliente = cliente.id
+    #             )
+            
+    #             livros = compra_data['livros']
+
+    #             for livro in livros:
+    #             # Nessa parte vc tem que criar o objeto da table de livros e passar os atributos
+    #                 livro_obj = Livro(
+    #                     nome = livro['livro'],
+    #                     autor = livro['autor'],
+    #                     editora = livro['editora'],
+    #                 )
+    #                 # aqui vc adiciona os objetos da tablea livro
+    #                 compra.livro_objeto.append(livro_obj)
+                    
+        
+    #             # faz o commit da compra, no atributo livro_objeto estão os livros que seram commitados tbm
+                
+    #             dados_compra = CompraEntity(
+    #                 id = compra.id,
+    #                 id_cliente = compra.id_cliente,
+    #                 nome=cliente.nome,
+    #                 livros=livros
+    #             )
+                # session.query(Compra).filter(Compra.id == id).update({
+                #     "id_compra": id,
+                #     "id_cliente": compra.id_cliente,
+                #     "nome": cliente.nome,
+                #     "livros" : [{
+                #         "nome":livro.nome,
+                #         "autor":livro.autor, 
+                #         "editora":livro.editora
+                #     }for livro in compra.livro_objeto]
+                # })
+                # # session.flush()
+                # session.commit()
+                
+    #             session.close()
+                
+    #             # dados_cadastrados={
+    #             #     "id_compra": id,
+    #             #     "id_cliente": compra.id_cliente,
+    #             #     # "nome": cliente.nome,
+    #             #     "livros" : [{
+    #             #         "nome":livro.nome,
+    #             #         "autor":livro.autor,
+    #             #         "editora":livro.editora
+    #             #     }for livro in compra.livro_objeto]
+    #             # }
+                
+    #             print(dados_compra)
+                
+    #             return dados_compra
+    #         else:
+    #             return None
+    #     except Exception as e:
+    #         print(e)
+    #         session.rollback()   
+    
+       
     @staticmethod    
     def atualizar_compra(id, compra_data):
         try:
             compra = session.query(Compra).filter(Compra.id == id).one_or_none()
-            print(compra)
-            cliente = session.query(Cliente).filter(Cliente.nome == compra_data['nome']).first()
-            
-            if  compra is not None:
-                compra = Compra(
-                    id_cliente = cliente.id
-                )
-            
-                livros = compra_data['livros']
-
-                for livro in livros:
-                # Nessa parte vc tem que criar o objeto da table de livros e passar os atributos
-                    livro_obj = Livro(
-                        nome = livro['livro'],
-                        autor = livro['autor'],
-                        editora = livro['editora'],
-                    )
-                    # aqui vc adiciona os objetos da tablea livro
-                    compra.livro_objeto.append(livro_obj)
+            if compra:
+                cliente = session.query(Cliente).filter(Cliente.nome == compra_data['nome']).first()
+                if cliente:
+                    livros_json = compra_data['livros']
+                    codigos_livro=[]
+                    #Limpar os livros antigos é necessário
+                    compra.livro_objeto.clear()
+                    for livro in livros_json:
+                        #buscando o livro no banco
+                        codigo = session.query(Livro).filter(Livro.nome == livro['nome']).first()
+                        #armazenando o codigo do livro buscando em uma lista
+                        codigos_livro.append(codigo.id)
+                    print(codigos_livro)
                     
-        
-                # faz o commit da compra, no atributo livro_objeto estão os livros que seram commitados tbm
+                    for compra_livro in codigos_livro:
+                        #Buscando um livro pelo id
+                        livro = session.query(Livro).filter(Livro.id==compra_livro).first()
+                        if livro:
+                            #Inserindo na tabela de relacionamento
+                            compra.livro_objeto.append(livro)
+                    session.commit()
+                    # return livros_json
                 
-                dados_compra = CompraEntity(
-                    id = compra.id,
-                    id_cliente = compra.id_cliente,
-                    nome=cliente.nome,
-                    livros=livros
-                )
-                session.add([dados_compra])
-                session.flush()
-                session.commit()
+                    
                 
-                session.close()
+                    dados_cadastrados={
+                        "id_compra": id,
+                        "id_cliente": compra.id_cliente,
+                        "nome": cliente.nome,
+                        "livros" : [{
+                            "nome":livro.nome,
+                            "autor":livro.autor,
+                            "editora":livro.editora
+                        }for livro in compra.livro_objeto]
+                    }
                 
-                # dados_cadastrados={
-                #     "id_compra": id,
-                #     "id_cliente": compra.id_cliente,
-                #     # "nome": cliente.nome,
-                #     "livros" : [{
-                #         "nome":livro.nome,
-                #         "autor":livro.autor,
-                #         "editora":livro.editora
-                #     }for livro in compra.livro_objeto]
-                # }
-                
-                print(dados_compra)
-                
-                return dados_compra
+                    session.close()
+                    return dados_cadastrados
             else:
+                #Não achou compra
                 return None
         except Exception as e:
             print(e)
             session.rollback()      
+            
+
             

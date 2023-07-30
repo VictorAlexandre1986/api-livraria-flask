@@ -7,6 +7,9 @@ http://127.0.0.1:5000/clientes
 findall user
 http://127.0.0.1:5000/clientes
 
+find user
+http://127.0.0.1:5000/clientes/1
+
 delete user
 http://127.0.0.1:5000/clientes/6
 
@@ -23,6 +26,9 @@ http://127.0.0.1:5000/livros/
 
 findall books
 http://127.0.0.1:5000/livros
+
+find books
+http://127.0.0.1:5000/livros/1
 
 update book
 http://127.0.0.1:5000/livros/1
